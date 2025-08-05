@@ -39,7 +39,7 @@ class MovieListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Movies"
+        title = .moviesTitle
         view.backgroundColor = .systemBackground
         setupLoadingIndicator()
         setupTableView()

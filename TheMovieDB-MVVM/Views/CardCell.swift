@@ -25,7 +25,7 @@ class CardCell: UITableViewCell {
         view.layer.cornerRadius = 8
         view.backgroundColor = .secondarySystemBackground
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.masksToBounds = true // sadece içerik kesilsin
+        view.layer.masksToBounds = true
         return view
     }()
     

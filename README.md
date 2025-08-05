@@ -153,6 +153,20 @@ TheMovieDB-MVVM/
 
 ---
 
+## 🌍 Localization
+
+The project uses `Localizable.strings` to store UI strings for easy translation.  
+Currently, only **English** localization is available, but the structure allows adding other languages (e.g., Turkish) later.
+
+**Example:**
+
+`Resources/en.lproj/Localizable.strings`
+```strings
+"movies.title" = "Movies";
+```
+
+---
+
 ## 🛠 Requirements
 
 - iOS 15.0+
