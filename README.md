@@ -1,4 +1,4 @@
-# TheMovieDB-MVVM-C
+# TheMovieDB-MVVM
 
 An iOS application built with Swift using the **MVVM-C architecture** that fetches movie data from [The Movie Database (TMDB)](https://www.themoviedb.org/) API.  
 The project demonstrates modern iOS development practices such as the Coordinator pattern, Dependency Injection, async/await, protocol-oriented design, and clean architecture principles.
@@ -9,8 +9,8 @@ The project demonstrates modern iOS development practices such as the Coordinato
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/TheMovieDB-MVVM-C.git
-cd TheMovieDB-MVVM-C
+git clone https://github.com/emrekr/TheMovieDB-MVVM.git
+cd TheMovieDB-MVVM
 ```
 
 ### 2. Create `Secrets.plist`
@@ -96,7 +96,7 @@ flowchart LR
 ## 📂 Folder Structure
 
 ```
-TheMovieDB-MVVM-C/
+TheMovieDB-MVVM/
 │
 ├── TheMovieDB-MVVM
 │   ├── App/                      # App lifecycle & main coordinator
