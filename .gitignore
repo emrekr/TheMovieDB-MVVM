@@ -1,0 +1,45 @@
+# Xcode
+DerivedData/
+*.xcworkspace
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+*.moved-aside
+*.xcscmblueprint
+
+# SwiftPM
+.build/
+.swiftpm/xcode/package.xcworkspace/
+
+# CocoaPods (if added later)
+Pods/
+Podfile.lock
+
+# Carthage (if added later)
+Carthage/
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Temporary files
+*.tmp
+*.swp
+*.lock
+.DS_Store
+
+# Crash reports
+*.crash
+
+# Archives
+*.xcarchive
+
+# Secrets
+TheMovieDB-MVVM/Resources/Secrets.plist
+
+# Preview files
+*.preview-thumbnails
+
