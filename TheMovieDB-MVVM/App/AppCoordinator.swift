@@ -10,6 +10,7 @@ import UIKit
 protocol Coordinator {
     var navigationController: UINavigationController { get set }
     func start()
+    func showMovieDetail(id: Int)
 }
 
 final class AppCoordinator: Coordinator {
@@ -23,6 +24,18 @@ final class AppCoordinator: Coordinator {
     
     func start() {
         let movieListVC = dependencyInjector.makeMovieListViewController()
+        movieListVC.delegate = self
         navigationController.pushViewController(movieListVC, animated: false)
+    }
+    
+    func showMovieDetail(id: Int) {
+        let movieDetailViewController = dependencyInjector.makeMovieDetailViewController(movieId: id)
+        navigationController.pushViewController(movieDetailViewController, animated: true)
+    }
+}
+
+extension AppCoordinator: MovieListViewControllerDelegate {
+    func didSelectMovie(id: Int) {
+        showMovieDetail(id: id)
     }
 }

@@ -9,7 +9,7 @@ import Foundation
 
 enum MovieEndpoint: Endpoint, Equatable {
     case popular(page: Int)
-    case detail(id: String)
+    case detail(id: Int)
     
     var baseURL: String {
         APIConfig.baseURL

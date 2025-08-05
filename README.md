@@ -154,6 +154,45 @@ TheMovieDB-MVVM/
 
 ---
 
+## 🎬 Movie Detail Feature
+
+The project now includes a fully functional **Movie Detail** module, built following MVVM-C principles.
+
+### Features
+- **Dedicated Service**: `MovieDetailService` handles fetching a single movie’s details via the `/movie/{id}` TMDB API endpoint.
+- **Dynamic UI**: Displays the movie poster, title, release date, vote average, and overview in a scrollable view.
+- **ImageLoader Integration**: Poster images are loaded asynchronously with caching, using the same loader as in the movie list.
+- **Dynamic Aspect Ratio**: Poster height is calculated at runtime based on the actual image size to avoid empty spaces with `scaleAspectFit`.
+- **Coordinator Navigation**: Selecting a movie from the list triggers navigation to the detail screen via the `AppCoordinator`.
+- **Dependency Injection**: `MovieDetailViewModel` and `MovieDetailService` instances are created via the `DependencyInjector`.
+
+### Architecture Diagram (Updated)
+```mermaid
+flowchart LR
+    A[AppCoordinator] --> B[DependencyInjector]
+    B --> C[MovieListViewController]
+    C --> D[MovieListViewModel]
+    D --> E[MovieService]
+    E --> F[NetworkService]
+    F --> G[MovieEndpoint / ImageEndpoint]
+    G --> H[(TMDB API)]
+
+    C --> I[MovieDetailViewController]
+    I --> J[MovieDetailViewModel]
+    J --> K[MovieDetailService]
+    K --> F
+```
+
+### Example UI
+- **Poster**: Large top image with dynamic height
+- **Title**: Large bold font
+- **Release Date**: Secondary label with calendar icon
+- **Vote Average**: Yellow star rating
+- **Overview**: Multi-line description text
+- **Scroll Support**: Entire content scrollable for long overviews
+
+---
+
 ## 🌍 Localization & Dynamic API Language
 
 The project uses **String Catalog (`.xcstrings`)** for managing translations.  
