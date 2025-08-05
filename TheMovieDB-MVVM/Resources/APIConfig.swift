@@ -22,6 +22,15 @@ struct APIConfig {
             fatalError("Failed to load API key from Secrets.plist: \(error)")
         }
     }()
+    
+    static var languageCode: String {
+        let preferred = Locale.preferredLanguages.first ?? "en"
+        if preferred.hasPrefix("tr") {
+            return "tr-TR"
+        } else {
+            return "en-US"
+        }
+    }
 }
 
 private struct Secrets: Decodable {

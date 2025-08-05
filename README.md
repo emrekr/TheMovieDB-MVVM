@@ -127,7 +127,7 @@ TheMovieDB-MVVM/
 │   ├── Resources/                 # Configs, assets, and localizations
 │   │   ├── APIConfig.swift
 │   │   ├── Assets.xcassets/
-│   │   ├── Localizable.strings
+│   │   ├── Localizable.xcstrings
 │   │   └── Secrets.plist (ignored)
 │   │
 │   ├── Services/                   # Business logic
@@ -154,16 +154,31 @@ TheMovieDB-MVVM/
 
 ---
 
-## 🌍 Localization
+## 🌍 Localization & Dynamic API Language
 
-The project uses `Localizable.strings` to store UI strings for easy translation.  
-Currently, only **English** localization is available, but the structure allows adding other languages (e.g., Turkish) later.
+The project uses **String Catalog (`.xcstrings`)** for managing translations.  
+Currently supports **English** and **Turkish** for the UI.  
+API requests to TMDB are also localized based on the device language:
+
+- If the device language is **Turkish**, API requests use `"tr-TR"`.
+- For all other languages, API requests default to `"en-US"`.
 
 **Example:**
 
-`Resources/en.lproj/Localizable.strings`
-```strings
-"movies.title" = "Movies";
+```json
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "movies.title" : {
+      "comment" : "Title for movies list screen",
+      "localizations" : {
+        "en" : { "stringUnit" : { "value" : "Movies" } },
+        "tr" : { "stringUnit" : { "value" : "Filmler" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}
 ```
 
 ---

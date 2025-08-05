@@ -29,11 +29,11 @@ enum MovieEndpoint: Endpoint, Equatable {
         case .popular(let page):
             return [
                 URLQueryItem(name: "page", value: String(page)),
-                URLQueryItem(name: "language", value: "en-US")
+                URLQueryItem(name: "language", value: APIConfig.languageCode)
             ]
         case .detail:
             return [
-                URLQueryItem(name: "language", value: "en-US")
+                URLQueryItem(name: "language", value: APIConfig.languageCode)
             ]
         }
     }

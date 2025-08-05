@@ -10,6 +10,12 @@
             "state" : "translated",
             "value" : "Movies"
           }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filmler"
+          }
         }
       }
     }
