@@ -9,17 +9,30 @@ import UIKit
 
 class CardCell: UITableViewCell {
     
+    private let shadowContainer: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOpacity = 0.1
+        view.layer.shadowOffset = CGSize(width: 0, height: 2)
+        view.layer.shadowRadius = 4
+        view.layer.masksToBounds = false
+        return view
+    }()
+    
     let containerView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 8
-        view.backgroundColor = .white
+        view.backgroundColor = .secondarySystemBackground
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.masksToBounds = true // sadece içerik kesilsin
         return view
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.backgroundColor = .systemGroupedBackground
+        backgroundColor = .clear
+        contentView.backgroundColor = .clear
         setupContainerView()
     }
     
@@ -28,21 +41,20 @@ class CardCell: UITableViewCell {
     }
     
     private func setupContainerView() {
-        contentView.addSubview(containerView)
+        contentView.addSubview(shadowContainer)
+        shadowContainer.addSubview(containerView)
+        
         NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 6),
-            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6)
+            shadowContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 6),
+            shadowContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            shadowContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            shadowContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6),
+            
+            containerView.topAnchor.constraint(equalTo: shadowContainer.topAnchor),
+            containerView.leadingAnchor.constraint(equalTo: shadowContainer.leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: shadowContainer.trailingAnchor),
+            containerView.bottomAnchor.constraint(equalTo: shadowContainer.bottomAnchor)
         ])
-        addShadow()
-    }
-    
-    private func addShadow() {
-        containerView.layer.shadowColor = UIColor.black.cgColor
-        containerView.layer.shadowOpacity = 0.1
-        containerView.layer.shadowOffset = CGSize(width: 0, height: 2)
-        containerView.layer.shadowRadius = 4
-        containerView.layer.masksToBounds = false
     }
 }
+
