@@ -124,9 +124,10 @@ TheMovieDB-MVVM/
 │   │       ├── ImageEndpoint.swift
 │   │       └── MovieEndpoint.swift
 │   │
-│   ├── Resources/                 # Configs & assets
+│   ├── Resources/                 # Configs, assets, and localizations
 │   │   ├── APIConfig.swift
 │   │   ├── Assets.xcassets/
+│   │   ├── Localizable.strings
 │   │   └── Secrets.plist (ignored)
 │   │
 │   ├── Services/                   # Business logic
