@@ -19,6 +19,11 @@ final class DependencyInjector {
         return MovieDetailViewController(viewModel: viewModel)
     }
     
+    func makeSearchViewController() -> SearchViewController {
+        let viewModel = makeSearchViewModel()
+        return SearchViewController(viewModel: viewModel)
+    }
+    
     // MARK: - ViewModels
     func makeMovieListViewModel() -> MovieListViewModelProtocol {
         let strategies: [MovieListStrategy] = [
@@ -34,6 +39,10 @@ final class DependencyInjector {
         MovieDetailViewModel(movieDetailService: makeMovieDetailService(), movieId: movieId)
     }
     
+    private func makeSearchViewModel() -> SearchViewModelProtocol {
+        SearchViewModel(searchService: makeSearchService())
+    }
+    
     // MARK: - Services
     private func makeMovieService() -> MovieServiceProtocol {
         let networkService = makeNetworkService()
@@ -42,6 +51,10 @@ final class DependencyInjector {
     
     private func makeMovieDetailService() -> MovieDetailServiceProtocol {
         MovieDetailService(networkService: makeNetworkService())
+    }
+    
+    private func makeSearchService() -> SearchServiceProtocol {
+        SearchService(networkService: makeNetworkService())
     }
     
     // MARK: - Network

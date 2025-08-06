@@ -7,16 +7,12 @@
 
 import UIKit
 
-protocol MovieListViewControllerDelegate: AnyObject {
-    func didSelectMovie(id: Int)
-}
-
 class MovieListViewController: UIViewController {
     
     private let tableView = UITableView()
     private var viewModel: MovieListViewModelProtocol
-    weak var delegate: MovieListViewControllerDelegate?
-    
+    weak var delegate: MovieSelectionDelegate?
+
     private let loadingFooterView: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .medium)
         indicator.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 44)
@@ -180,9 +176,9 @@ extension MovieListViewController: UITableViewDataSource {
 //MARK: - UITableView Delegate
 extension MovieListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let movie = viewModel.movie(at: indexPath)
-        delegate?.didSelectMovie(id: movie.id)
         tableView.deselectRow(at: indexPath, animated: true)
+        let movie = viewModel.movie(at: indexPath)
+        delegate?.didSelectMovie(id: movie.id, source: .moviesTab)
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

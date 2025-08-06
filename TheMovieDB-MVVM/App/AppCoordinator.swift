@@ -10,7 +10,6 @@ import UIKit
 protocol Coordinator {
     var navigationController: UINavigationController { get set }
     func start()
-    func showMovieDetail(id: Int)
 }
 
 final class AppCoordinator: Coordinator {
@@ -18,6 +17,7 @@ final class AppCoordinator: Coordinator {
     private let dependencyInjector: DependencyInjector
     
     private var moviesNavigationController: UINavigationController?
+    private var searchNavigationController: UINavigationController?
     
     init(navigationController: UINavigationController, dependencyInjector: DependencyInjector) {
         self.navigationController = navigationController
@@ -31,20 +31,16 @@ final class AppCoordinator: Coordinator {
                                             selectedImage: UIImage(systemName: "film.fill"))
         self.moviesNavigationController = moviesNav
         
-        let discoverNav = UINavigationController(rootViewController: makeDiscover())
-        discoverNav.tabBarItem = UITabBarItem(title: .discoverTitle,
+        let searchNav = UINavigationController(rootViewController: makeSearchViewController())
+        searchNav.tabBarItem = UITabBarItem(title: .searchTitle,
                                               image: UIImage(systemName: "magnifyingglass"),
                                               selectedImage: UIImage(systemName: "magnifyingglass"))
+        self.searchNavigationController = searchNav
         
         let tabBarController = UITabBarController()
-        tabBarController.viewControllers = [moviesNav, discoverNav]
+        tabBarController.viewControllers = [moviesNav, searchNav]
         
         navigationController.setViewControllers([tabBarController], animated: false)
-    }
-    
-    func showMovieDetail(id: Int) {
-        let movieDetailViewController = dependencyInjector.makeMovieDetailViewController(movieId: id)
-        moviesNavigationController?.pushViewController(movieDetailViewController, animated: true)
     }
     
     private func makeMoviesList() -> UIViewController {
@@ -53,16 +49,26 @@ final class AppCoordinator: Coordinator {
         return movieList
     }
     
-    private func makeDiscover() -> UIViewController {
-        let vc = UIViewController()
-        vc.view.backgroundColor = .systemBackground
-        vc.title = .discoverTitle
-        return vc
+    private func makeSearchViewController() -> UIViewController {
+        let search = dependencyInjector.makeSearchViewController()
+        search.delegate = self
+        return search
+    }
+    
+    private func showMovieDetail(id: Int, in navigationController: UINavigationController?) {
+        guard let nav = navigationController else { return }
+        let detailVC = dependencyInjector.makeMovieDetailViewController(movieId: id)
+        nav.pushViewController(detailVC, animated: true)
     }
 }
 
-extension AppCoordinator: MovieListViewControllerDelegate {
-    func didSelectMovie(id: Int) {
-        showMovieDetail(id: id)
+extension AppCoordinator: MovieSelectionDelegate {
+    func didSelectMovie(id: Int, source: MovieSource) {
+        switch source {
+        case .moviesTab:
+            showMovieDetail(id: id, in: moviesNavigationController)
+        case .searchTab:
+            showMovieDetail(id: id, in: searchNavigationController)
+        }
     }
 }

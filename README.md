@@ -1,6 +1,6 @@
 # TheMovieDB-MVVM
 
-An iOS application built with Swift using the **MVVM-C architecture** that fetches movie data from [The Movie Database (TMDB)](https://www.themoviedb.org/) API.  
+An iOS application built with Swift using the **MVVM-C architecture** that fetches movie data from [The Movie Database (TMDB)](https://www.themoviedb.org/) API.
 The project demonstrates modern iOS development practices such as the Coordinator pattern, Dependency Injection, async/await, protocol-oriented design, and clean architecture principles.
 
 ---
@@ -8,10 +8,11 @@ The project demonstrates modern iOS development practices such as the Coordinato
 ## 🚀 Getting Started
 
 ### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/emrekr/TheMovieDB-MVVM.git
 cd TheMovieDB-MVVM
-````
+```
 
 ### 2. Create `Secrets.plist`
 
@@ -65,7 +66,7 @@ Coordinator → Dependency Injection → TabBarController → ViewControllers �
 * **Network Layer:** Generic API client using `Endpoint` protocols
 * **ImageLoader:** Async image loading with in-memory caching
 * **Strategy Pattern:** Handles multiple movie list types dynamically (Popular, Now Playing, Top Rated, Upcoming)
-* **TabBarController:** Hosts multiple app sections (Movies, Discover)
+* **TabBarController:** Hosts multiple app sections (Movies, Search)
 
 ---
 
@@ -83,8 +84,11 @@ flowchart LR
     F --> G[MovieEndpoint / ImageEndpoint]
     G --> H[(TMDB API)]
 
-    T --> X[Discover NavigationController]
-    X --> Y[DiscoverViewController]
+    T --> S[Search NavigationController]
+    S --> SC[SearchViewController]
+    SC --> SV[SearchViewModel]
+    SV --> SS[SearchService]
+    SS --> F
 
     C --> I[MovieDetailViewController]
     I --> J[MovieDetailViewModel]
@@ -102,7 +106,7 @@ flowchart LR
 * **TabBarController** integration for multiple sections:
 
   * **Movies tab** with Strategy Pattern and category selection
-  * **Discover tab** (placeholder for future features)
+  * **Search tab** for searching movies by title
 * **Type-safe networking** with `Endpoint` protocol & `NetworkService`
 * **Async/Await** for clean asynchronous code
 * **ImageLoader** with caching support
@@ -113,6 +117,7 @@ flowchart LR
 * **Loading indicators** for initial and paginated loads
 * **Reusable UI Components** (`CardCell`, `MovieCell`, `MovieListCategoryCell`)
 * **Minimal storyboard usage** (Launch Screen only)
+* **Shared delegate** (`MovieSelectionDelegate`) for navigation from both tabs to Movie Detail
 
 ---
 
@@ -137,6 +142,22 @@ A **custom horizontal CollectionView menu** is used for selecting movie categori
 * Selected category has a colored underline and highlighted text
 * Supports horizontal scrolling for long or localized titles
 * Automatically selects the first category on launch
+
+---
+
+## 🔍 Search Feature
+
+The **Search** tab allows searching movies via TMDB's `/search/movie` endpoint.
+
+### Features
+
+* **Real-time search with debounce**: Searches only after the user stops typing for 0.5 seconds
+* **Infinite scroll**: Loads more results as the user scrolls
+* **Clear on empty**: Clears results instantly when the search bar is emptied
+* **Dismiss keyboard on scroll**
+* **Coordinator integration**: Selecting a search result opens Movie Detail screen
+* **Shared delegate**: Uses `MovieSelectionDelegate` for both Movie List and Search modules
+* **Separation of concerns**: ViewControllers only report the selected movie & tab source, Coordinator handles navigation
 
 ---
 

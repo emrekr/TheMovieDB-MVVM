@@ -1,24 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "discover.title" : {
-      "comment" : "Title for discover screen",
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Discover"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keşfet"
-          }
-        }
-      }
-    },
     "movies.nowPlaying" : {
       "comment" : "Now playing movies list title",
       "extractionState" : "manual",
@@ -105,6 +87,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gelecek Filmler"
+          }
+        }
+      }
+    },
+    "search.placeholder" : {
+      "comment" : "Search placeholder text",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search movies..."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Film ara…"
+          }
+        }
+      }
+    },
+    "search.title" : {
+      "comment" : "Title for search screen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ara"
           }
         }
       }

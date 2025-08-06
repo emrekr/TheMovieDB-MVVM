@@ -16,4 +16,8 @@ enum APIPaths {
             "/movie/\(id)"
         }
     }
+    
+    enum Search {
+        static let movie = "/search/movie"
+    }
 }
