@@ -53,7 +53,7 @@ TheMovieDB-MVVM/Resources/Secrets.plist
 This project follows the **MVVM-C** (Model-View-ViewModel with Coordinator) pattern:
 
 ```
-Coordinator → Dependency Injection → ViewController → ViewModel → Service → Network Layer
+Coordinator → Dependency Injection → TabBarController → ViewControllers → ViewModel → Service → Network Layer
 ```
 
 **Layers:**
@@ -65,6 +65,7 @@ Coordinator → Dependency Injection → ViewController → ViewModel → Servic
 * **Network Layer:** Generic API client using `Endpoint` protocols
 * **ImageLoader:** Async image loading with in-memory caching
 * **Strategy Pattern:** Handles multiple movie list types dynamically (Popular, Now Playing, Top Rated, Upcoming)
+* **TabBarController:** Hosts multiple app sections (Movies, Discover)
 
 ---
 
@@ -73,12 +74,17 @@ Coordinator → Dependency Injection → ViewController → ViewModel → Servic
 ```mermaid
 flowchart LR
     A[AppCoordinator] --> B[DependencyInjector]
-    B --> C[MovieListViewController]
+    B --> T[UITabBarController]
+    T --> M[Movies NavigationController]
+    M --> C[MovieListViewController]
     C --> D[MovieListViewModel]
     D --> E[MovieService]
     E --> F[NetworkService]
     F --> G[MovieEndpoint / ImageEndpoint]
     G --> H[(TMDB API)]
+
+    T --> X[Discover NavigationController]
+    X --> Y[DiscoverViewController]
 
     C --> I[MovieDetailViewController]
     I --> J[MovieDetailViewModel]
@@ -93,63 +99,20 @@ flowchart LR
 * **MVVM-C architecture** with protocol-oriented ViewModels
 * **Coordinator pattern** for navigation
 * **Dependency Injection** for modular design
+* **TabBarController** integration for multiple sections:
+
+  * **Movies tab** with Strategy Pattern and category selection
+  * **Discover tab** (placeholder for future features)
 * **Type-safe networking** with `Endpoint` protocol & `NetworkService`
 * **Async/Await** for clean asynchronous code
 * **ImageLoader** with caching support
 * **Strategy Pattern** for dynamic movie list selection
-
-  * Supports **Popular**, **Now Playing**, **Top Rated**, **Upcoming**
-  * Easily extendable for new categories
-* **Custom CollectionView Menu** for list category selection
-
-  * Replaces UISegmentedControl for more flexibility
-  * Horizontal scroll, custom styling, and selection underline
+* **Custom CollectionView Menu** for category selection
 * **Pagination (infinite scroll)**
 * **Pull-to-refresh**
 * **Loading indicators** for initial and paginated loads
 * **Reusable UI Components** (`CardCell`, `MovieCell`, `MovieListCategoryCell`)
 * **Minimal storyboard usage** (Launch Screen only)
-
----
-
-## 📂 Folder Structure
-
-```
-TheMovieDB-MVVM/
-│
-├── TheMovieDB-MVVM
-│   ├── App/                      # App lifecycle & main coordinator
-│   ├── DependencyInjection/       # Centralized dependency creation
-│   ├── Models/                    # Data models
-│   ├── Networking/                # Networking layer
-│   │   └── Endpoint/
-│   ├── Resources/                 # Configs, assets, and localizations
-│   ├── Services/                   # Business logic
-│   ├── ViewModels/                 # ViewModel layer
-│   │   └── Strategies/             # Movie list strategies for Strategy Pattern
-│   └── Views/                      # UI components
-│       ├── CardCell.swift
-│       ├── MovieCell.swift
-│       ├── MovieListViewController.swift
-│       └── MovieListCategoryCell.swift
-│
-└── Tests & UITests
-```
-
----
-
-## 🎬 Movie Detail Feature
-
-The project includes a fully functional **Movie Detail** module.
-
-### Features
-
-* **Dedicated Service**: `MovieDetailService` handles fetching a single movie’s details via the `/movie/{id}` TMDB API endpoint.
-* **Dynamic UI**: Poster, title, release date, vote average, and overview in a scrollable layout.
-* **ImageLoader Integration**: Asynchronous poster loading with caching.
-* **Dynamic Aspect Ratio**: Poster height calculated based on actual image size.
-* **Coordinator Navigation**: Selection from the list navigates to detail view.
-* **Dependency Injection**: Managed through `DependencyInjector`.
 
 ---
 
@@ -163,13 +126,6 @@ The **Strategy Pattern** is used to dynamically change the list type:
   * The TMDB API endpoint for that list
 * ViewModel receives a list of strategies from `DependencyInjector`
 * UI selection changes the active strategy and triggers a new fetch
-
-Example strategies:
-
-* `PopularMoviesStrategy`
-* `NowPlayingMoviesStrategy`
-* `TopRatedMoviesStrategy`
-* `UpcomingMoviesStrategy`
 
 ---
 
@@ -212,5 +168,4 @@ API requests are localized based on device language (`"tr-TR"` for Turkish, `"en
 ## 📜 License
 
 This project is licensed under the MIT License.
-
 

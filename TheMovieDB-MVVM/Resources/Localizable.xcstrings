@@ -1,8 +1,26 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "discover.title" : {
+      "comment" : "Title for discover screen",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discover"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keşfet"
+          }
+        }
+      }
+    },
     "movies.nowPlaying" : {
-      "comment" : "\"Now playing movies list title",
+      "comment" : "Now playing movies list title",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {

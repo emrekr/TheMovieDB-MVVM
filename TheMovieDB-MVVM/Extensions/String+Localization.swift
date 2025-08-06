@@ -9,6 +9,7 @@ import Foundation
 
 extension String {
     static let moviesTitle = NSLocalizedString("movies.title", comment: "Title for movies list screen")
+    static let discoverTitle = NSLocalizedString("discover.title", comment: "Title for discover screen")
     
     static let moviesPopular = NSLocalizedString("movies.popular", comment: "Popular movies list title")
     static let moviesNowPlaying = NSLocalizedString("movies.nowPlaying", comment: "Now playing movies list title")
