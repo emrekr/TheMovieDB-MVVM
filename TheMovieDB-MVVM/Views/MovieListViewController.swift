@@ -31,7 +31,8 @@ class MovieListViewController: UIViewController {
         return indicator
     }()
 
-
+    private var menuCollectionView: UICollectionView!
+    
     init(viewModel: MovieListViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -47,8 +48,14 @@ class MovieListViewController: UIViewController {
         title = .moviesTitle
         view.backgroundColor = .systemBackground
         setupLoadingIndicator()
+        setupMenuCollectionView()
         setupTableView()
         bindViewModel()
+        
+        DispatchQueue.main.async {
+            self.menuCollectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: [])
+        }
+        
         Task { await viewModel.fetchMovies(page: 1) }
     }
     
@@ -65,10 +72,33 @@ class MovieListViewController: UIViewController {
         view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.topAnchor.constraint(equalTo: menuCollectionView.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
+    
+    private func setupMenuCollectionView() {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = 12
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        
+        menuCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        menuCollectionView.showsHorizontalScrollIndicator = false
+        menuCollectionView.backgroundColor = .clear
+        menuCollectionView.dataSource = self
+        menuCollectionView.delegate = self
+        menuCollectionView.register(MovieListCategoryCell.self, forCellWithReuseIdentifier: MovieListCategoryCell.reuseIdentifier)
+        
+        view.addSubview(menuCollectionView)
+        menuCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            menuCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            menuCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            menuCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            menuCollectionView.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
     
@@ -164,5 +194,24 @@ extension MovieListViewController: UITableViewDelegate {
                 hideLoadingFooter()
             }
         }
+    }
+}
+
+//MARK: - UICollectionView Data Source and UICollectionView Delegate
+extension MovieListViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        viewModel.strategyTitles.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieListCategoryCell.reuseIdentifier, for: indexPath) as? MovieListCategoryCell else {
+            return UICollectionViewCell()
+        }
+        cell.configure(with: viewModel.strategyTitles[indexPath.item])
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        viewModel.updateStrategyIndex(indexPath.item)
     }
 }

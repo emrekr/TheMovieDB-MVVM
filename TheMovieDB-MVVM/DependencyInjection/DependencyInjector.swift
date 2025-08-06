@@ -20,9 +20,14 @@ final class DependencyInjector {
     }
     
     // MARK: - ViewModels
-    private func makeMovieListViewModel() -> MovieListViewModelProtocol {
-        let movieService = makeMovieService()
-        return MovieListViewModel(movieService: movieService)
+    func makeMovieListViewModel() -> MovieListViewModelProtocol {
+        let strategies: [MovieListStrategy] = [
+            PopularMoviesStrategy(),
+            NowPlayingMoviesStrategy(),
+            TopRatedMoviesStrategy(),
+            UpcomingMoviesStrategy()
+        ]
+        return MovieListViewModel(movieService: makeMovieService(), strategies: strategies)
     }
     
     private func makeMovieDetailViewModel(movieId: Int) -> MovieDetailViewModelProtocol {

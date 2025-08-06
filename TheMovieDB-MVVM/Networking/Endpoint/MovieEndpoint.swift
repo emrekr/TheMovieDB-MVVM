@@ -10,6 +10,9 @@ import Foundation
 enum MovieEndpoint: Endpoint, Equatable {
     case popular(page: Int)
     case detail(id: Int)
+    case nowPlaying(page: Int)
+    case topRated(page: Int)
+    case upcoming(page: Int)
     
     var baseURL: String {
         APIConfig.baseURL
@@ -18,23 +21,28 @@ enum MovieEndpoint: Endpoint, Equatable {
     var path: String {
         switch self {
         case .popular:
-            return "/movie/popular"
+            return APIPaths.Movie.popular
         case .detail(let id):
-            return "/movie/\(id)"
+            return APIPaths.Movie.detail(id: id)
+        case .nowPlaying:
+            return APIPaths.Movie.nowPlaying
+        case .topRated:
+            return APIPaths.Movie.topRated
+        case .upcoming:
+            return APIPaths.Movie.upcoming
         }
+    }
+    
+    private var languageParam: URLQueryItem {
+        URLQueryItem(name: "language", value: APIConfig.languageCode)
     }
     
     var queryItems: [URLQueryItem] {
         switch self {
-        case .popular(let page):
-            return [
-                URLQueryItem(name: "page", value: String(page)),
-                URLQueryItem(name: "language", value: APIConfig.languageCode)
-            ]
+        case .popular(let page), .nowPlaying(let page), .topRated(let page), .upcoming(let page):
+            return [.init(name: "page", value: String(page)), languageParam]
         case .detail:
-            return [
-                URLQueryItem(name: "language", value: APIConfig.languageCode)
-            ]
+            return [languageParam]
         }
     }
     

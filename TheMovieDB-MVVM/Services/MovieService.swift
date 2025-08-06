@@ -8,7 +8,7 @@
 import Foundation
 
 protocol MovieServiceProtocol {
-    func fetchPopularMovies(page: Int) async throws -> MovieListResponse
+    func fetchMovies(endpoint: MovieEndpoint) async throws -> MovieListResponse
 }
 
 final class MovieService: MovieServiceProtocol {
@@ -18,7 +18,7 @@ final class MovieService: MovieServiceProtocol {
         self.networkService = networkService
     }
     
-    func fetchPopularMovies(page: Int) async throws -> MovieListResponse {
-        try await networkService.request(MovieEndpoint.popular(page: page))
+    func fetchMovies(endpoint: MovieEndpoint) async throws -> MovieListResponse {
+        try await networkService.request(endpoint)
     }
 }

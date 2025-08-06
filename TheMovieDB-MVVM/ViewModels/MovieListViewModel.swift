@@ -15,6 +15,9 @@ protocol MovieListViewModelProtocol {
     func fetchMovies(page: Int) async
     func movie(at indexPath: IndexPath) -> Movie
     
+    func updateStrategyIndex(_ index: Int)
+    var strategyTitles: [String] { get }
+    
     var numberOfRowsInSection: Int { get }
     var nextPage: Int { get }
 }
@@ -22,6 +25,13 @@ protocol MovieListViewModelProtocol {
 class MovieListViewModel: MovieListViewModelProtocol {
     private let movieService: MovieServiceProtocol
     private var movies: [Movie] = []
+    
+    private let strategies: [MovieListStrategy]
+    private var strategy: MovieListStrategy
+    
+    var strategyTitles: [String] {
+        strategies.map { $0.title }
+    }
     
     var onDataUpdated: (() -> Void)?
     var onError: ((String) -> Void)?
@@ -32,8 +42,16 @@ class MovieListViewModel: MovieListViewModelProtocol {
     private var isLoading = false
     var nextPage: Int { currentPage + 1 }
     
-    init(movieService: MovieServiceProtocol) {
+    init(movieService: MovieServiceProtocol, strategies: [MovieListStrategy]) {
         self.movieService = movieService
+        self.strategies = strategies
+        self.strategy = strategies.first!
+    }
+    
+    func updateStrategyIndex(_ index: Int) {
+        guard strategies.indices.contains(index) else { return }
+        strategy = strategies[index]
+        Task { await fetchMovies(page: 1) }
     }
     
     @MainActor
@@ -47,14 +65,11 @@ class MovieListViewModel: MovieListViewModelProtocol {
         }
         
         do {
-            let response = try await movieService.fetchPopularMovies(page: page)
+            let endpoint = strategy.endpoint(for: page)
+            let response = try await movieService.fetchMovies(endpoint: endpoint)
             currentPage = page
             totalPages = response.totalPages
-            if page == 1 {
-                movies = response.results
-            } else {
-                movies.append(contentsOf: response.results)
-            }
+            movies = page == 1 ? response.results : movies + response.results
             onDataUpdated?()
         } catch {
             onError?("Failed to load movies: \(error.localizedDescription)")

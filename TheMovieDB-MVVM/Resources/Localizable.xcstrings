@@ -1,6 +1,42 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "movies.nowPlaying" : {
+      "comment" : "\"Now playing movies list title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Now Playing"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vizyonda"
+          }
+        }
+      }
+    },
+    "movies.popular" : {
+      "comment" : "Popular movies list title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Popular"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Popüler"
+          }
+        }
+      }
+    },
     "movies.title" : {
       "comment" : "Title for movies list screen",
       "extractionState" : "manual",
@@ -15,6 +51,42 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Filmler"
+          }
+        }
+      }
+    },
+    "movies.topRated" : {
+      "comment" : "Top rated movies list title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Top Rated"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En Yüksek Puanlı"
+          }
+        }
+      }
+    },
+    "movies.upcoming" : {
+      "comment" : "Upcoming movies list title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upcoming"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelecek Filmler"
           }
         }
       }
