@@ -5,6 +5,17 @@ The project demonstrates modern iOS development practices such as the Coordinato
 
 ---
 
+## 📸 Screenshots
+
+<p align="center">
+  <img src="assets/popular.png" alt="Popular Movies" width="250"/>
+  <img src="assets/topRated.png" alt="Top Rated Movies" width="250"/>
+  <img src="assets/search.png" alt="Search Movies" width="250"/>
+  <img src="assets/detail.png" alt="Movie Detail" width="250"/>
+</p>
+
+---
+
 ## 🚀 Getting Started
 
 ### 1. Clone the Repository
