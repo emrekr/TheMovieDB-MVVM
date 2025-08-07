@@ -17,5 +17,9 @@ extension String {
     static let moviesUpcoming = NSLocalizedString("movies.upcoming", comment: "Upcoming movies list title")
     
     static let searchPlaceholder = NSLocalizedString("search.placeholder", comment: "Search placeholder text")
+    
+    static let castTitle = NSLocalizedString("movieDetail.cast", comment: "Movie detail cast title")
+    static let similarMoviesTitle = NSLocalizedString("movieDetail.similarMovies", comment: "Movie detail similar movies title")
+    static let watchTrailerTitle = NSLocalizedString("movieDetail.watchTrailer", comment: "Movie detail watch trailer title")
 }
 

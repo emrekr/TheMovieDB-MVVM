@@ -13,81 +13,57 @@ final class MovieDetailViewController: UIViewController {
     private var currentImageEndpoint: ImageEndpoint?
     private var posterHeightConstraint: NSLayoutConstraint?
     
-    private let scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        return scrollView
+    // MARK: - UI Components
+    private let scrollView = UIScrollView()
+    private let contentStack = UIStackView()
+    
+    private let posterImageView = UIImageView()
+    private let titleLabel = UILabel()
+    private let releaseDateLabel = UILabel()
+    private let voteLabel = UILabel()
+    private let overviewLabel = UILabel()
+    
+    private lazy var castCollectionView = makeCollectionView(itemSize: CGSize(width: 100, height: 150), cellType: CastCell.self, reuseIdentifier: CastCell.reuseIdentifier)
+    private lazy var similarCollectionView = makeCollectionView(itemSize: CGSize(width: 100, height: 180), cellType: SimilarMovieCell.self, reuseIdentifier: SimilarMovieCell.reuseIdentifier)
+    
+    private lazy var trailerButton: UIButton = {
+        let btn = UIButton(type: .system)
+        btn.setTitle("🎬 \(String.watchTrailerTitle)", for: .normal)
+        btn.addTarget(self, action: #selector(trailerTapped), for: .touchUpInside)
+        return btn
     }()
     
-    private let contentStack: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 12
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
-    
-    private let posterImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 8
-        imageView.backgroundColor = .systemGray5
-        return imageView
-    }()
-    
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = .preferredFont(forTextStyle: .title1)
-        label.numberOfLines = 0
-        return label
-    }()
-    
-    private let releaseDateLabel: UILabel = {
-        let label = UILabel()
-        label.font = .preferredFont(forTextStyle: .subheadline)
-        label.textColor = .secondaryLabel
-        return label
-    }()
-    
-    private let voteLabel: UILabel = {
-        let label = UILabel()
-        label.font = .preferredFont(forTextStyle: .subheadline)
-        label.textColor = .systemYellow
-        return label
-    }()
-    
-    private let overviewLabel: UILabel = {
-        let label = UILabel()
-        label.font = .preferredFont(forTextStyle: .body)
-        label.numberOfLines = 0
-        return label
-    }()
-        
+    // MARK: - Init
     init(viewModel: MovieDetailViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     required init?(coder: NSCoder) { fatalError() }
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        setupUI()
+        setupLayout()
         bindViewModel()
-        Task { await viewModel.fetchMovieDetail() }
+        Task { await viewModel.fetchAllData() }
     }
     
-    private func setupUI() {
+    // MARK: - Setup Layout
+    private func setupLayout() {
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        contentStack.axis = .vertical
+        contentStack.spacing = 12
+        contentStack.translatesAutoresizingMaskIntoConstraints = false
+        
         view.addSubview(scrollView)
         scrollView.addSubview(contentStack)
         
-        contentStack.addArrangedSubview(posterImageView)
-        contentStack.addArrangedSubview(titleLabel)
-        contentStack.addArrangedSubview(releaseDateLabel)
-        contentStack.addArrangedSubview(voteLabel)
-        contentStack.addArrangedSubview(overviewLabel)
+        setupPosterSection()
+        setupInfoSection()
+        setupCastSection()
+        setupSimilarSection()
+        setupTrailerButton()
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -103,41 +79,150 @@ final class MovieDetailViewController: UIViewController {
         ])
     }
     
+    private func setupPosterSection() {
+        posterImageView.contentMode = .scaleAspectFit
+        posterImageView.layer.cornerRadius = 8
+        posterImageView.clipsToBounds = true
+        posterImageView.backgroundColor = .systemGray5
+        contentStack.addArrangedSubview(posterImageView)
+    }
+    
+    private func setupInfoSection() {
+        titleLabel.font = .preferredFont(forTextStyle: .title1)
+        titleLabel.numberOfLines = 0
+        
+        releaseDateLabel.font = .preferredFont(forTextStyle: .subheadline)
+        releaseDateLabel.textColor = .secondaryLabel
+        
+        voteLabel.font = .preferredFont(forTextStyle: .subheadline)
+        voteLabel.textColor = .systemYellow
+        
+        overviewLabel.font = .preferredFont(forTextStyle: .body)
+        overviewLabel.numberOfLines = 0
+        
+        contentStack.addArrangedSubview(titleLabel)
+        contentStack.addArrangedSubview(releaseDateLabel)
+        contentStack.addArrangedSubview(voteLabel)
+        contentStack.addArrangedSubview(overviewLabel)
+    }
+    
+    private func setupCastSection() {
+        contentStack.addArrangedSubview(sectionTitle(.castTitle))
+        castCollectionView.dataSource = self
+        contentStack.addArrangedSubview(castCollectionView)
+        castCollectionView.heightAnchor.constraint(equalToConstant: 160).isActive = true
+    }
+    
+    private func setupSimilarSection() {
+        contentStack.addArrangedSubview(sectionTitle(.similarMoviesTitle))
+        similarCollectionView.dataSource = self
+        similarCollectionView.delegate = self
+        contentStack.addArrangedSubview(similarCollectionView)
+        similarCollectionView.heightAnchor.constraint(equalToConstant: 200).isActive = true
+    }
+    
+    private func setupTrailerButton() {
+        contentStack.addArrangedSubview(trailerButton)
+    }
+    
+    private func sectionTitle(_ text: String) -> UILabel {
+        let lbl = UILabel()
+        lbl.text = text
+        lbl.font = .preferredFont(forTextStyle: .headline)
+        return lbl
+    }
+    
+    private func makeCollectionView<T: UICollectionViewCell>(itemSize: CGSize, cellType: T.Type, reuseIdentifier: String) -> UICollectionView {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.itemSize = itemSize
+        layout.minimumInteritemSpacing = 8
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = .clear
+        cv.register(cellType, forCellWithReuseIdentifier: reuseIdentifier)
+        cv.showsHorizontalScrollIndicator = false
+        return cv
+    }
+
+    
+    // MARK: - Binding
     private func bindViewModel() {
         viewModel.onDataUpdated = { [weak self] in
-            guard let self = self, let movie = self.viewModel.movie else { return }
-            
-            self.titleLabel.text = movie.title
-            self.releaseDateLabel.text = "📅 \(movie.releaseDate)"
-            self.voteLabel.text = "⭐️ \(String(format: "%.1f", movie.voteAverage))/10"
-            self.overviewLabel.text = movie.overview
-            
-            if let posterPath = movie.posterPath {
-                let endpoint = ImageEndpoint.image(path: posterPath, size: .original)
-                self.currentImageEndpoint = endpoint
-                
-                Task {
-                    if let image = await ImageLoader.shared.loadImage(from: endpoint),
-                       self.currentImageEndpoint == endpoint {
-                        
-                        self.posterImageView.image = image
-                        
-                        self.posterHeightConstraint?.isActive = false
-                        
-                        let aspectRatio = image.size.height / image.size.width
-                        self.posterHeightConstraint = self.posterImageView.heightAnchor.constraint(equalTo: self.posterImageView.widthAnchor, multiplier: aspectRatio)
-                        self.posterHeightConstraint?.isActive = true
-                    }
-                }
-            } else {
-                self.posterImageView.image = UIImage(named: "posterPlaceholder")
-                self.posterHeightConstraint?.isActive = false
-            }
+            self?.updateUI()
         }
-        
         viewModel.onError = { error in
             print(error)
         }
     }
+    
+    private func updateUI() {
+        guard let movie = viewModel.movie else { return }
+        
+        titleLabel.text = movie.title
+        releaseDateLabel.text = "📅 \(movie.releaseDate)"
+        voteLabel.text = "⭐️ \(String(format: "%.1f", movie.voteAverage))/10"
+        overviewLabel.text = movie.overview
+        trailerButton.isHidden = viewModel.trailerURL == nil
+        
+        if let posterPath = movie.posterPath {
+            loadPosterImage(posterPath)
+        }
+        
+        castCollectionView.reloadData()
+        similarCollectionView.reloadData()
+    }
+    
+    private func loadPosterImage(_ path: String) {
+        let endpoint = ImageEndpoint.image(path: path, size: .original)
+        currentImageEndpoint = endpoint
+        
+        Task {
+            if let image = await ImageLoader.shared.loadImage(from: endpoint),
+               currentImageEndpoint == endpoint {
+                posterImageView.image = image
+                updatePosterHeight(with: image)
+            }
+        }
+    }
+    
+    private func updatePosterHeight(with image: UIImage) {
+        posterHeightConstraint?.isActive = false
+        let aspectRatio = image.size.height / image.size.width
+        posterHeightConstraint = posterImageView.heightAnchor.constraint(equalTo: posterImageView.widthAnchor, multiplier: aspectRatio)
+        posterHeightConstraint?.isActive = true
+    }
+    
+    // MARK: - Actions
+    @objc private func trailerTapped() {
+        guard let url = viewModel.trailerURL else { return }
+        UIApplication.shared.open(url)
+    }
 }
 
+// MARK: - UICollectionViewDataSource & Delegate
+extension MovieDetailViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if collectionView == castCollectionView {
+            return viewModel.numberOfCast
+        }
+        return viewModel.numberOfSimilarMovies
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if collectionView == castCollectionView {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CastCell.reuseIdentifier, for: indexPath) as! CastCell
+            if let cast = viewModel.cast(at: indexPath.row) {
+                cell.configure(with: cast)
+            }
+            return cell
+        }
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SimilarMovieCell.reuseIdentifier, for: indexPath) as! SimilarMovieCell
+        if let movie = viewModel.similarMovie(at: indexPath.row) {
+            cell.configure(with: movie)
+        }
+        return cell
+    }
+}

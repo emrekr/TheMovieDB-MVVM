@@ -1,6 +1,59 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "movieDetail.cast" : {
+      "comment" : "Movie detail cast title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cast"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyuncular"
+          }
+        }
+      }
+    },
+    "movieDetail.similarMovies" : {
+      "comment" : "Movie detail similar movies title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Similar Movies"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benzer Filmler"
+          }
+        }
+      }
+    },
+    "movieDetail.watchTrailer" : {
+      "comment" : "Movie detail watch trailer title",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Watch Trailer"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fragmanı İzle"
+          }
+        }
+      }
+    },
     "movies.nowPlaying" : {
       "comment" : "Now playing movies list title",
       "extractionState" : "manual",

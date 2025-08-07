@@ -12,9 +12,10 @@ enum APIPaths {
         static let topRated = "/movie/top_rated"
         static let upcoming = "/movie/upcoming"
         
-        static func detail(id: Int) -> String {
-            "/movie/\(id)"
-        }
+        static func detail(id: Int) -> String { "/movie/\(id)" }
+        static func credits(id: Int) -> String { "/movie/\(id)/credits" }
+        static func similar(id: Int) -> String { "/movie/\(id)/similar" }
+        static func videos(id: Int) -> String { "/movie/\(id)/videos" }
     }
     
     enum Search {

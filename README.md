@@ -161,6 +161,27 @@ The **Search** tab allows searching movies via TMDB's `/search/movie` endpoint.
 
 ---
 
+## 🎬 Movie Detail Screen
+
+The **Movie Detail** module displays rich information about a selected movie, including its metadata, cast, similar movies, and trailer link.
+
+### Features
+
+* **MVVM-C compliant structure** with clean separation between ViewModel and ViewController
+* Fetches all movie-related data concurrently:
+
+  * Movie detail
+  * Credits (cast)
+  * Similar movies
+  * Videos (trailers)
+* YouTube trailer is extracted and presented as a tappable link
+* Cast and similar movies are displayed in horizontally scrolling `UICollectionView`s
+* Poster image is loaded dynamically and its height is adjusted based on the image aspect ratio
+* Modular CollectionView creation with a reusable factory method
+* Trailer button is shown only if a valid trailer URL exists
+
+---
+
 ## 🌍 Localization & Dynamic API Language
 
 The project uses **String Catalog (`.xcstrings`)** for managing translations.

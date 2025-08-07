@@ -13,6 +13,9 @@ enum MovieEndpoint: Endpoint, Equatable {
     case nowPlaying(page: Int)
     case topRated(page: Int)
     case upcoming(page: Int)
+    case credits(id: Int)
+    case similar(id: Int, page: Int)
+    case videos(id: Int)
     
     var baseURL: String {
         APIConfig.baseURL
@@ -20,16 +23,14 @@ enum MovieEndpoint: Endpoint, Equatable {
     
     var path: String {
         switch self {
-        case .popular:
-            return APIPaths.Movie.popular
-        case .detail(let id):
-            return APIPaths.Movie.detail(id: id)
-        case .nowPlaying:
-            return APIPaths.Movie.nowPlaying
-        case .topRated:
-            return APIPaths.Movie.topRated
-        case .upcoming:
-            return APIPaths.Movie.upcoming
+        case .popular: return APIPaths.Movie.popular
+        case .detail(let id): return APIPaths.Movie.detail(id: id)
+        case .nowPlaying: return APIPaths.Movie.nowPlaying
+        case .topRated: return APIPaths.Movie.topRated
+        case .upcoming: return APIPaths.Movie.upcoming
+        case .credits(let id): return APIPaths.Movie.credits(id: id)
+        case .similar(let id, _): return APIPaths.Movie.similar(id: id)
+        case .videos(let id): return APIPaths.Movie.videos(id: id)
         }
     }
     
@@ -39,10 +40,19 @@ enum MovieEndpoint: Endpoint, Equatable {
     
     var queryItems: [URLQueryItem] {
         switch self {
-        case .popular(let page), .nowPlaying(let page), .topRated(let page), .upcoming(let page):
-            return [.init(name: "page", value: String(page)), languageParam]
-        case .detail:
-            return [languageParam]
+        case .popular(let page),
+             .nowPlaying(let page),
+             .topRated(let page),
+             .upcoming(let page),
+             .similar(_, let page):
+            return [
+                URLQueryItem(name: "page", value: String(page)),
+                URLQueryItem(name: "language", value: APIConfig.languageCode)
+            ]
+        case .detail, .credits, .videos:
+            return [
+                URLQueryItem(name: "language", value: APIConfig.languageCode)
+            ]
         }
     }
     
